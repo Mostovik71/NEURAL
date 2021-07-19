@@ -15,7 +15,7 @@ def simple_gradient():
     print(x.grad)
 '''
 
-def create_nn(batch_size=100, learning_rate=0.05, epochs=10,
+def create_nn(batch_size=100, learning_rate=1, epochs=1,
               log_interval=10):#batch_size - размер пачки данных на подачу(например по 100 строк за итерацию)
                                #learning rate - скорость обучения(подбираем, чтобы не перескочить глобальный минимум и ошибку)
                                #epochs - количество эпох (одна эпоха - все итерации), по сути чем больше тем лучше
@@ -52,49 +52,48 @@ def create_nn(batch_size=100, learning_rate=0.05, epochs=10,
     net = Net()#Создается сеть (объект класса net)
     print(net)
 
-    # Оптимизируем путем стохастического градиентного спуска, задача найти глобальный минимум функции, т.е. минимизировать функию потерь
+    # Оптимизируем путем стохастического(вес сразу обновляется когда найден delta(w)) градиентного спуска, задача найти глобальный минимум функции, т.е. минимизировать функию потерь
     optimizer = optim.SGD(net.parameters(), lr=learning_rate, momentum=0.9)
     # Создаем функцию потерь - функция потерь отрицательного логарифмического правдоподобия(линейная регрессия)
     criterion = nn.NLLLoss()
 
+
+
+    #Данные скачиваются батчами, и поступают в цикл
     # run the main training loop
     for epoch in range(epochs):
-        for batch_idx, (data, target) in enumerate(train_loader):
-            data, target = Variable(data), Variable(target)
+        for batch_idx, (data, target) in enumerate(train_loader):#Для номера батча, данных и таргетного признака
+            data, target = Variable(data), Variable(target)#Делаем данные переменным PyTorch
             # resize data from (batch_size, 1, 28, 28) to (batch_size, 28*28)
-            data = data.view(-1, 28*28)
-            optimizer.zero_grad()
-            net_out = net(data)
-            loss = criterion(net_out, target)
-            loss.backward()
-            optimizer.step()
-            if batch_idx % log_interval == 0:
-                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                    epoch, batch_idx * len(data), len(train_loader.dataset),
-                           100. * batch_idx / len(train_loader), loss.data))
+            data = data.view(-1, 28*28)#Грубо говоря, данные теперь будут размера (batch_size,784)
+            optimizer.zero_grad()#Все происходит по методу обратного распространения
+            net_out = net(data)#На выходе имеем логарифмический softmax для партии данных, который возвращает метод forward
+            loss = criterion(net_out, target)#Считается потеря, разница между таргетом и полученным значением
+            loss.backward()#Метод обратного распространения ошибки(потери), чтобы обновить веса, тк все стохастически, то веса обновляются сразу
+            optimizer.step()#Градиентный спуск по весам, которые были обновлены
+            if batch_idx % log_interval == 0:#Выводим результат, когда проходит определенное количество итераций
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(#Вывод в формате:
+                    epoch, batch_idx * len(data), len(train_loader.dataset), #номер эпохи, номер батча * размер батча,длина датасета
+                           100. * batch_idx / len(train_loader), loss.data))#сколько обучилось в процентах, значение функции потерь на каждом шаге
 
-    # run a test loop
+    # Запускаем цикл на тестовом датасете, чтобы проверить обученную сеть
     test_loss = 0
     correct = 0
     for data, target in test_loader:
         data, target = Variable(data, volatile=True), Variable(target)
         data = data.view(-1, 28 * 28)
-        net_out = net(data)
-        # sum up batch loss
-        test_loss += criterion(net_out, target).data
-        pred = net_out.data.max(1)[1]  # get the index of the max log-probability
-        correct += pred.eq(target.data).sum()
+        net_out = net(data)#Передаем в сеть тестовые данные
 
-    test_loss /= len(test_loader.dataset)
-    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-        test_loss, correct, len(test_loader.dataset),
-        100. * correct / len(test_loader.dataset)))
+        test_loss += criterion(net_out, target).data#Суммируем потери со всех партий
+        pred = net_out.data.max(1)[1]  # Получаем индекс максимального значения
+
+        correct += pred.eq(target.data).sum()#Сравнивает значения в двух тензорах и при совпадении возвращает единицу. В противном случае, функция возвращает 0
+
+    test_loss /= len(test_loader.dataset)#Средняя потеря
+    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(#Вывод в формате:
+        test_loss, correct, len(test_loader.dataset),#Средняя потеря, количество правильных ответов/весь датасет,
+        100. * correct / len(test_loader.dataset)))#количество правильных ответов в процентах
 
 
-if __name__ == "__main__":
-    run_opt = 2
-    if run_opt == 1:
-        pass
-        #simple_gradient()
-    elif run_opt == 2:
-        create_nn()
+
+create_nn()
