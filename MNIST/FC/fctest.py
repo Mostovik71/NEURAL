@@ -41,3 +41,12 @@ with torch.no_grad():
 test_losses.append(test_loss / len(test_loader))
 print("Test Loss: {:.3f}.. ".format(test_losses[-1]),"Test Accuracy: {:.3f}".format(accuracy / len(test_loader)))
 
+#For show some digits, maybe
+'''
+grid = make_grid(torch.Tensor((train_df.iloc[random_sel, 1:].as_matrix()/255.).reshape((-1, 28, 28))).unsqueeze(1), nrow=8)
+plt.rcParams['figure.figsize'] = (16, 2)
+plt.imshow(grid.numpy().transpose((1,2,0)))
+plt.axis('off')
+print(*list(train_df.iloc[random_sel, 0].values), sep = ', ')
+'''
+
