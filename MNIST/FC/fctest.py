@@ -39,4 +39,5 @@ with torch.no_grad():
         accuracy += torch.mean(equals.type(torch.FloatTensor))
         stop=1
 test_losses.append(test_loss / len(test_loader))
+print("Test Loss: {:.3f}.. ".format(test_losses[-1]),"Test Accuracy: {:.3f}".format(accuracy / len(test_loader)))
 
