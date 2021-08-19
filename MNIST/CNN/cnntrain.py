@@ -15,11 +15,11 @@ class ConvNet(nn.Module):
     def __init__(self):
         super(ConvNet, self).__init__()#Входное изображение  - 28х28 пикселей
         self.layer1 = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size=5, stride=1, padding=2),
+            nn.Conv2d(1, 32, kernel_size=5, stride=1, padding=2),#nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2))#Выход после 1 сверточного слоя - 14х14 пикселей, 32 канала(14х14х32)
         self.layer2 = nn.Sequential(
-            nn.Conv2d(32, 64, kernel_size=5, stride=1, padding=2),
+            nn.Conv2d(32, 64, kernel_size=5, stride=1, padding=2),#nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2))#Выход после 2 сверточного слоя - 7х7 пикселей, 64 канала(7х7х64)
         self.drop_out = nn.Dropout()#Отсеивающий слой для обхода переобучения
