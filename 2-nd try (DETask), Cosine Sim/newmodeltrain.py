@@ -72,18 +72,16 @@ def convert_to_dataset_torch(data: pd.DataFrame, labels: pd.Series) -> TensorDat
 
 train = convert_to_dataset_torch(X_train, y_train)
 validation = convert_to_dataset_torch(X_validation, y_validation)
-import multiprocessing
+
 
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
-# The DataLoader needs to know our batch size for training, so we specify it
-# here.
+
 batch_size = 4
 
-core_number = multiprocessing.cpu_count()
 
-# Create the DataLoaders for our training and validation sets.
-# We'll take training samples in random order.
+
+
 train_dataloader = DataLoader(
             train,
 
@@ -115,7 +113,7 @@ from transformers import AdamW
 
 
 
-# Note: AdamW is a class from the huggingface library (as opposed to pytorch)
+
 adamw_optimizer = AdamW(bert_model.parameters(),
                   lr = 2e-5,
                   eps = 1e-8
@@ -123,14 +121,13 @@ adamw_optimizer = AdamW(bert_model.parameters(),
 
 from transformers import get_linear_schedule_with_warmup
 
-# Number of training epochs. The BERT authors recommend between 2 and 4.
+
 epochs = 10
 
-# Total number of training steps is [number of batches] x [number of epochs].
-# (Note that this is not the same as the number of training samples).
+
 total_steps = len(train_dataloader) * epochs
 
-# Create the learning rate scheduler.
+
 scheduler = get_linear_schedule_with_warmup(adamw_optimizer,
                                             num_warmup_steps = 0,
                                             num_training_steps = total_steps)
@@ -143,10 +140,9 @@ def format_time(elapsed):
     '''
     Takes a time in seconds and returns a string hh:mm:ss
     '''
-    # Round to the nearest second.
+    
     elapsed_rounded = int(round((elapsed)))
 
-    # Format as hh:mm:ss
     return str(datetime.timedelta(seconds=elapsed_rounded))
 
 
@@ -155,7 +151,7 @@ def fit_batch(dataloader, model, optimizer, epoch):
     total_train_accuracy=0
 
     for batch in tqdm(dataloader, desc=f"Training epoch:{epoch}", unit="batch"):
-        # Unpack batch from dataloader.
+        
         input_ids1, attention_masks1, token_type_ids1, labels1,input_ids2, attention_masks2, token_type_ids2, labels2 = batch
 
         model.zero_grad()
@@ -169,7 +165,7 @@ def fit_batch(dataloader, model, optimizer, epoch):
         token_type_ids2 = token_type_ids2.to(DEVICE)
         attention_masks2 = attention_masks2.to(DEVICE)
 
-        # Perform a forward pass (evaluate the model on this training batch).
+        
 
         logits1 = (model(input_ids=input_ids1,
                       token_type_ids=token_type_ids1,
@@ -216,12 +212,11 @@ def eval_batch(dataloader, model, metric=accuracy_score):
     predictions, predicted_labels = [], []
 
     for batch in tqdm(dataloader, desc="Evaluating", unit="batch"):
-        # Unpack batch from dataloader.
+     
         input_ids1, attention_masks1, token_type_ids1, labels1, input_ids2, attention_masks2, token_type_ids2, labels2 = batch
         model.cuda()
 
-        # Tell pytorch not to bother with constructing the compute graph during
-        # the forward pass, since this is only needed for backprop (training).
+      
         input_ids1 = input_ids1.to(DEVICE, dtype=torch.long)
         token_type_ids1 = token_type_ids1.to(DEVICE, dtype=torch.long)
         attention_masks1 = attention_masks1.to(DEVICE, dtype=torch.long)
@@ -231,7 +226,7 @@ def eval_batch(dataloader, model, metric=accuracy_score):
         attention_masks2 = attention_masks2.to(DEVICE, dtype=torch.long)
 
         with torch.no_grad():
-            # Forward pass, calculate logit predictions.
+            
             m1 = (model(input_ids1,
                        token_type_ids=token_type_ids1,
                        attention_mask=attention_masks1
@@ -256,7 +251,7 @@ def eval_batch(dataloader, model, metric=accuracy_score):
 
 import random
 
-# Set the seed value all over the place to make this reproducible.
+
 seed_val = 42
 random.seed(seed_val)
 numpy.random.seed(seed_val)
@@ -264,18 +259,16 @@ torch.manual_seed(seed_val)
 
 
 def train(train_dataloader, validation_dataloader, model, optimizer, epochs):
-    # We'll store a number of quantities such as training and validation loss,
-    # validation accuracy, and timings.
+   
     training_stats = []
 
-    # Measure the total training time for the whole run.
+   
     total_t0 = time.time()
 
     for epoch in range(0, epochs):
-        # Measure how long the training epoch takes.
+       
         t0 = time.time()
 
-        # Reset the total loss for this epoch.
         total_train_loss = 0
 
 
