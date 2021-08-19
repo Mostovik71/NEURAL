@@ -10,7 +10,7 @@ import numpy as np
 
 
 
-# Convolutional neural network (two convolutional layers)
+
 class ConvNet(nn.Module):
     def __init__(self):
         super(ConvNet, self).__init__()#Входное изображение  - 28х28 пикселей
@@ -52,29 +52,28 @@ train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle
 valid_loader = torch.utils.data.DataLoader(valid, batch_size=batch_size, shuffle=True)
 model = ConvNet()
 model.to(DEVICE)
-# Loss and optimizer
+
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-# Train the model
+
 total_step = len(train_loader)
 loss_list = []
 acc_list = []
 for epoch in range(num_epochs):#Цикл по эпохе
     for i, (images, labels) in enumerate(train_loader):#Цикл по батчам
-        # Run the forward pass
+    
         images=images.to(DEVICE)
         labels=labels.to(DEVICE)
         outputs = model(images)
         loss = criterion(outputs, labels)
         loss_list.append(loss.item())
 
-        # Backprop and perform Adam optimization
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
-        # Track the accuracy
+        
         total = labels.size(0)
         _, predicted = torch.max(outputs.data, 1)#максимальные предсказанные вероятности и их индексы(predicted - число, которое предсказала модель)
         correct = (predicted == labels).sum().item()#Сколько из батча модель предсказала правильно
@@ -85,7 +84,7 @@ for epoch in range(num_epochs):#Цикл по эпохе
                   .format(epoch + 1, num_epochs, i + 1, total_step, loss.item(),
                           (correct / total) * 100))
         stop = 1
-# Test the model
+
 model.eval()
 with torch.no_grad():
     correct = 0
@@ -100,6 +99,6 @@ with torch.no_grad():
 
     print('Test Accuracy of the model on the 10000 test images: {} %'.format((correct / total) * 100))
 
-# Save the model and plot
+
 torch.save(model,'cnnmodel.pth')
 
