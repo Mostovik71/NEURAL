@@ -14,7 +14,7 @@ from sklearn.metrics import accuracy_score
 from tabulate import tabulate
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 #df=pd.read_excel('newwithoutstrange.xlsx')
-df=pd.read_excel('duplideasclean.xlsx')
+df=pd.read_excel()
 #df.dropna(inplace=True)
 #df.drop_duplicates(inplace=True)
 #print(df['is_duplicate'].value_counts())
