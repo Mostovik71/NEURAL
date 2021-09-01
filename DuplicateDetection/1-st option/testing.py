@@ -18,7 +18,7 @@ columns=['id','Descr1','Descr2','is_duplicate']
 df.columns=columns
 df.drop(['id'],axis=1,inplace=True)
 df.dropna(inplace=True)
-df.to_csv('duplideas.csv')
+df.to_csv()
 '''
 
 
