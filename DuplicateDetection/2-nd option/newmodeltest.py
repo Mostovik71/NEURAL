@@ -22,10 +22,9 @@ columns=['id','Descr1','Descr2','is_duplicate']
 df.columns=columns
 df.drop(['id'],axis=1,inplace=True)
 df.dropna(inplace=True)
-df.to_csv('duplideas.csv')
+df.to_csv()
 '''
-#df=pd.read_csv('df5aug.csv')
-#df=pd.read_excel('shortideas.xlsx')
+
 #from transformers import BertForSequenceClassification
 df=pd.read_excel('filmsbooksclean2.xlsx')
 DEVICE='cuda:0'
@@ -46,7 +45,7 @@ def convert_to_dataset_torch(data: pd.DataFrame, labels: pd.Series) -> TensorDat
     attention_masks2 = []
     token_type_ids2 = []
     for _, row in tqdm(data.iterrows(), total=data.shape[0]):
-        encoded1 = tokenizer.encode_plus(row["idea1"], max_length=max_length,
+        encoded1 = tokenizer.encode_plus(row["Descr1"], max_length=max_length,
                                              pad_to_max_length=True,
                                              return_attention_mask=True, return_tensors='pt', truncation=True)
         input_ids1.append(encoded1['input_ids'])
@@ -55,7 +54,7 @@ def convert_to_dataset_torch(data: pd.DataFrame, labels: pd.Series) -> TensorDat
 
 
 
-        encoded2 = tokenizer.encode_plus(row["idea2"], max_length=max_length,
+        encoded2 = tokenizer.encode_plus(row["Descr2"], max_length=max_length,
                                          pad_to_max_length=True,
                                          return_attention_mask=True, return_tensors='pt', truncation=True)
         input_ids2.append(encoded2['input_ids'])
