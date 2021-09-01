@@ -20,23 +20,23 @@ df.drop(['id'],axis=1,inplace=True)
 df.dropna(inplace=True)
 df.to_csv('duplideas.csv')
 '''
-df=pd.read_csv('df5aug.csv')
 
 
-#df=pd.read_excel('duplideas.xlsx')
+
+df=pd.read_excel('filmsbooksclean.xlsx')
 DEVICE='cuda:0'
 model = torch.load('modelnew.pth')
 model.to(DEVICE)
 from tqdm import tqdm
 from torch.utils.data import TensorDataset
-X_test=df[['idea1','idea2']]
+X_test=df[['Descr1','Descr2']]
 y_test=df['is_duplicate']
 def convert_to_dataset_torch(data: pd.DataFrame, labels: pd.Series) -> TensorDataset:
     input_ids = []
     attention_masks = []
     token_type_ids = []
     for _, row in tqdm(data.iterrows(), total=data.shape[0]):
-        encoded_dict = tokenizer.encode_plus(row["idea1"], row["idea2"], max_length=512,
+        encoded_dict = tokenizer.encode_plus(row["Descr1"], row["Descr2"], max_length=512,
                                              pad_to_max_length=True,
                                              return_attention_mask=True, return_tensors='pt', truncation=True)
         # Add the encoded sentences to the list.
