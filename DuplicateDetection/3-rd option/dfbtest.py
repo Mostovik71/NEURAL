@@ -38,7 +38,7 @@ class Classifier(nn.Module):
 model=torch.load('modelfeedforward1024.pth')
 batch_size = 1
 valid_data = pd.read_excel('embeddings.xlsx')
-data=pd.read_excel('duplideasclean.xlsx')
+data=pd.read_excel('filmsbooks.xlsx')
 valid_data['is_duplicate']=data['is_duplicate']
 valid_data.drop('Unnamed: 0', axis=1, inplace=True)
 #valid_data.rename(columns = {'0.1':'is_duplicate'}, inplace = True)
