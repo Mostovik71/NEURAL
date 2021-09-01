@@ -38,7 +38,7 @@ class Classifier(nn.Module):
 model=torch.load('modelfeedforward1024.pth')
 batch_size = 1
 valid_data = pd.read_excel('embeddings.xlsx')
-data=pd.read_excel('duplideasclean.xlsx')
+data=pd.read_excel('')
 valid_data['is_duplicate']=data['is_duplicate']
 valid_data.drop('Unnamed: 0', axis=1, inplace=True)
 #valid_data.rename(columns = {'0.1':'is_duplicate'}, inplace = True)
@@ -101,5 +101,5 @@ def eval_batch(dataloader, model, metric=accuracy_score):
     return total_eval_accuracy, total_eval_loss, predictions, predicted_labels
 model.eval()
 _, _,predictions,predicted_labels = eval_batch(valid_loader, model)
-dataframe=pd.concat([data[['idea1','idea2','is_duplicate']],pd.Series(predicted_labels)],axis=1)
+dataframe=pd.concat([data[['...','...','is_duplicate']],pd.Series(predicted_labels)],axis=1)
 dataframe.to_excel('feedforward1024.xlsx')
