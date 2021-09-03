@@ -34,7 +34,7 @@ model = SentenceTransformer("sentence-transformers/LaBSE")
 model.to(DEVICE)
 from tqdm import tqdm
 from torch.utils.data import TensorDataset
-X_test=df[['idea1','idea2']]
+X_test=df[['Descr1','Descr2']]
 y_test=df['is_duplicate']
 max_length=512
 def convert_to_dataset_torch(data: pd.DataFrame, labels: pd.Series) -> TensorDataset:
