@@ -65,7 +65,7 @@ class test_CustomDataset(Dataset):
         return self.dataframe.shape[0]
     def __getitem__(self,index):
         image = self.dataframe.iloc[index]['Path']
-        image = os.path.join('GTSRB(Road Signs in Germany)/data',image)
+        image = os.path.join('data',image)
         image = cv2.imread(image)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = Image.fromarray(image)
@@ -218,7 +218,7 @@ def eval_batch(dataloader, model, metric=accuracy_score):
     final_targets, final_outputs = [], []
 
     for batch in tqdm(dataloader, desc="Evaluating", unit="batch"):
-        # Unpack batch from dataloader.
+        
         inputs = batch['image']
         targets = batch['targets']
 
@@ -241,7 +241,7 @@ def eval_batch(dataloader, model, metric=accuracy_score):
 
 import random
 
-# Set the seed value all over the place to make this reproducible.
+
 seed_val = 42
 random.seed(seed_val)
 numpy.random.seed(seed_val)
@@ -249,56 +249,52 @@ torch.manual_seed(seed_val)
 
 
 def train(train_dataloader, validation_dataloader, model, optimizer, epochs):
-    # We'll store a number of quantities such as training and validation loss,
-    # validation accuracy, and timings.
+   
     training_stats = []
 
-    # Measure the total training time for the whole run.
+   
     total_t0 = time.time()
 
     for epoch in range(0, epochs):
-        # Measure how long the training epoch takes.
+        
         t0 = time.time()
 
-        # Reset the total loss for this epoch.
+        
         total_train_loss = 0
 
-        # Put the model into training mode.
+       
 
         model.train()
 
         total_train_loss = fit_batch(train_dataloader, model, optimizer, epoch)
 
-        # Calculate the average loss over all of the batches.
+       
         avg_train_loss = total_train_loss / len(train_dataloader)
 
-        # Measure how long this epoch took.
+        
         training_time = format_time(time.time() - t0)
 
         t0 = time.time()
 
-        # Put the model in evaluation mode--the dropout layers behave differently
-        # during evaluation.
         model.eval()
 
         total_eval_accuracy, total_eval_loss, _, _ = eval_batch(validation_dataloader, model)
         FILE = 'roadsignskaggle.pth'
         torch.save(model, FILE)
-        # Report the final accuracy for this validation run.
+        
         avg_val_accuracy = total_eval_accuracy / len(validation_dataloader)
         avg_train_loss = total_train_loss / len(train_dataloader)
         print(f"  Accuracy: {avg_val_accuracy}")
 
-        # Calculate the average loss over all of the batches.
         avg_val_loss = total_eval_loss / len(validation_dataloader)
 
 
-        # Measure how long the validation run took.
+       
         validation_time = format_time(time.time() - t0)
         print(f"  Train Loss: {avg_train_loss}")
         print(f"  Validation Loss: {avg_val_loss}")
 
-        # Record all statistics from this epoch.
+        
         training_stats.append(
             {
                 'epoch': epoch,
