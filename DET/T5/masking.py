@@ -1,4 +1,4 @@
-#Code, which I used for mask random token in sentence with probability 0.15
+#Code, which I used for corrupt source sentence x
 import pandas as pd
 import numpy as np
 import torch
