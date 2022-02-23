@@ -18,12 +18,12 @@ rand = torch.rand(inputs.input_ids.shape)
 mask_arr = (rand <= 0.15) * (inputs.input_ids != 101) * (inputs.input_ids != 102) * (inputs.input_ids != 0)
 selection = torch.flatten((mask_arr[0]).nonzero()).tolist()
 inputs.input_ids[0, selection] = 103 #Replacing selected tokens with tokens <MASK> (id=103)
-print(inputs)
+print(inputs)#Masked sentence
 rand = torch.rand(inputs.input_ids.shape)
 mask_arr = (rand <= 0.1) * (inputs.input_ids == 103)
 selection = torch.flatten((mask_arr[0]).nonzero()).tolist()
 inputs.input_ids[0, selection] = np.random.randint(0,30000)#Replacing masked tokens with probability 0.1
 
-print(inputs)#MASKED SENTENCE
+print(inputs)
 print(tokenizer.decode(inputs.input_ids[0],skip_special_tokens=True))
 print(tokenizer.decode(model.generate(inputs.input_ids)[0],skip_special_tokens=True))
