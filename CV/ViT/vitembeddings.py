@@ -13,6 +13,7 @@ class PatchEmbeddings(nn.Module):
     def forward(self, x):
         out = self.projection(x)
         out = out.flatten(start_dim=2)
+        out = out.reshape((1, 196, 768))
         return out
 class ViTEmbeddings(nn.Module):
     def __init__(self):
