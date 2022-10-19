@@ -1,2 +1,2 @@
 # NN
-Проекты, связанные CV (object detection, OCR, classification), NlP (text classification, text generation)
+Проекты, связанные с CV (object detection, OCR, classification), NLP (text classification, text generation)
